@@ -5,22 +5,17 @@ from torch.utils.data import DataLoader, TensorDataset
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
 import os
 
-# Load the data
-data = pd.read_csv('data/day_approach_maskedID_timeseries.csv')
+# Load the preprocessed data
+data = pd.read_csv('processing/preprocessed_week.csv')
 
 # Separate features and target
 X = data.drop(columns=['injury'])
 y = data['injury']
 
-# Standardize the features
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
-
 # Convert to PyTorch tensors
-X_tensor = torch.tensor(X_scaled, dtype=torch.float32)
+X_tensor = torch.tensor(X.values, dtype=torch.float32)
 y_tensor = torch.tensor(y.values, dtype=torch.float32)
 
 # Split the data into training and testing sets
@@ -84,7 +79,7 @@ selected_features_df = pd.DataFrame(selected_feature_names, columns=['Feature'])
 selected_features_df.to_csv('analysis/weekly/selected_features_nn.csv', index=False)
 
 # Save the model's state dictionary
-model_path = 'models/daily/simple_nn_model.pth'
+model_path = 'models/weekly/simple_nn_model.pth'
 torch.save(model.state_dict(), model_path)
 
 print(f"Model saved to {model_path}")
