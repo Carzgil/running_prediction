@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler
 import os
 
 # Load the data
-data = pd.read_csv('data/week_approach_maskedID_timeseries.csv')
+data = pd.read_csv('data/day_approach_maskedID_timeseries.csv')
 
 # Separate features and target
 X = data.drop(columns=['injury'])
@@ -82,3 +82,9 @@ selected_feature_names = [X.columns[i] for i in important_features]
 os.makedirs('analysis/weekly', exist_ok=True)
 selected_features_df = pd.DataFrame(selected_feature_names, columns=['Feature'])
 selected_features_df.to_csv('analysis/weekly/selected_features_nn.csv', index=False)
+
+# Save the model's state dictionary
+model_path = 'models/daily/simple_nn_model.pth'
+torch.save(model.state_dict(), model_path)
+
+print(f"Model saved to {model_path}")
