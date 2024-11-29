@@ -1,3 +1,7 @@
+# Inspired by
+# https://agentpy.readthedocs.io/en/latest/agentpy_flocking.html
+#
+
 import agentpy as ap
 import numpy as np
 import pandas as pd
@@ -122,6 +126,13 @@ class BoidsModel(ap.Model):
         self.agents.update_velocity()  # Adjust direction
         self.agents.update_position()  # Move into new direction
 
+        if (self.model.t == self.p.steps):
+            # save positions to file
+            positions = [(boid.records['Athlete ID'].iloc[0], position[0], position[1]) for boid, position in self.space.positions.items()]
+            
+            df = pd.DataFrame(positions, columns=['Athlete ID', 'x', 'y'])
+            df.to_csv('clustering/boids_positions.csv', index=False)
+
 
 def animation_plot_single(m, ax):
     ndim = m.p.ndim
@@ -141,7 +152,7 @@ def animation_plot(m, p):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot(111, projection=projection)
     animation = ap.animate(m(p), fig, ax, animation_plot_single)
-    animation.save("boids_1.gif")
+    animation.save("boids_2.gif")
     return animation
 
 
