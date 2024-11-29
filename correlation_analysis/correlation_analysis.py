@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 from scipy.stats import pearsonr
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 
 def perform_correlation_analysis(data):
@@ -29,22 +28,12 @@ def perform_correlation_analysis(data):
     injury_correlations_series = pd.Series(
         injury_correlations, index=data.columns)
 
-    # Plot correlation bar chart
-    # plt.figure(figsize=(12, 6))
-    # injury_correlations.drop('injury').sort_values().plot(kind='bar')
-    # plt.title('Feature Correlations with Injury')
-    # plt.xlabel('Features')
-    # plt.ylabel('Correlation Coefficient')
-    # plt.xticks(rotation=45, ha='right')
-    # plt.tight_layout()
-    # plt.show()
-
     return injury_correlations_series, p_values_series
 
 
 if __name__ == "__main__":
-    # data = pd.read_csv('clustering/filtered_data_without_outliers.csv')
-    data = pd.read_csv('data/day_approach_maskedID_timeseries.csv')
+    data = pd.read_csv('clustering/filtered_data_without_outliers.csv')
+    # data = pd.read_csv('data/day_approach_maskedID_timeseries.csv')
 
     # Filter columns from previous days
     # keep_cols = data.columns[data.columns.str.endswith('.6') |
@@ -70,9 +59,9 @@ if __name__ == "__main__":
         injury_correlations, p_values_series = perform_correlation_analysis(
             group)
 
-        # Check if any correlation is less than 0.1
+        # Check if any correlation is less than 0.4
         injury_correlations = injury_correlations.iloc[:-1]
-        if injury_correlations.abs().max() < 0.5:
+        if injury_correlations.abs().max() < 0.4:
             athletes_with_small_correlation.append(athlete_id)
 
     print(f"Athletes with small correlation: {
@@ -81,6 +70,21 @@ if __name__ == "__main__":
     # Remove athletes with small correlation
     top_performing_data = data[~data['Athlete ID'].isin(
         athletes_with_small_correlation)]
+    
+    # correlation on whole dataset
+    injury_correlations, p_values_series = perform_correlation_analysis(
+        top_performing_data)
+
+    plt.figure(figsize=(12, 6))
+    injury_correlations.sort_values().plot(kind='bar')
+    plt.title('Feature Correlations with Injury (Whole Dataset)')
+    plt.xlabel('Features')
+    plt.ylabel('Correlation Coefficient')
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    plt.savefig('correlation_analysis/whole_dataset.png')
+    plt.show()
+    plt.close()
 
     # Group data by Athlete ID without aggregation
     athlete_groups = {athlete_id: group for athlete_id,
