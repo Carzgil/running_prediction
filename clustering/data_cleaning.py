@@ -76,12 +76,12 @@ def perform_clustering_agglomerative(data):
 
 def visualize_clusters(data, clusters, output_file):
     # Reduce dimensionality to 2D for visualization
-    pca = PCA(n_components=2)
-    reduced_data = pca.fit_transform(data)
+    # pca = PCA(n_components=2)
+    # reduced_data = pca.fit_transform(data)
     
     # Create scatter plot
     plt.figure(figsize=(10, 8))
-    scatter = plt.scatter(reduced_data[:, 0], reduced_data[:, 1], 
+    scatter = plt.scatter(data.iloc[:, 0], data.iloc[:, 1], 
                          c=clusters, cmap='viridis')
     
     # Add labels for each point
@@ -97,7 +97,9 @@ def visualize_clusters(data, clusters, output_file):
 
 def main():
     # Load the data
-    data = pd.read_csv('data/day_approach_maskedID_timeseries.csv')
+    data = pd.read_csv('clustering/boids_positions.csv')
+    data = data.drop(columns=['Athlete ID'])
+    
     
     # Define clustering methods
     clustering_methods = [
@@ -121,7 +123,7 @@ def main():
             print(f"Cluster {cluster}: {count} entries")
         
         # Visualize the clusters
-        output_file = f'clustering_results_{method_name.lower()}.png'
+        output_file = f'clustering_results_flocking_{method_name.lower()}.png'
         visualize_clusters(data, clusters, output_file)
         print(f"\nVisualization saved as '{output_file}'")
 
