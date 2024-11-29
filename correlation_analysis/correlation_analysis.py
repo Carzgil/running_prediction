@@ -35,11 +35,6 @@ if __name__ == "__main__":
     data = pd.read_csv('clustering/filtered_data_without_outliers.csv')
     # data = pd.read_csv('data/day_approach_maskedID_timeseries.csv')
 
-    # Filter columns from previous days
-    # keep_cols = data.columns[data.columns.str.endswith('.6') |
-    #                          data.columns.isin(['Athlete ID', 'injury', 'Date'])]
-    # data = data.loc[:, keep_cols]
-
     # Group data by Athlete ID without aggregation
     athlete_groups = {athlete_id: group for athlete_id,
                       group in data.groupby('Athlete ID')}
@@ -100,7 +95,9 @@ if __name__ == "__main__":
 
         # filter out columns with correlation less than 0.5
         injury_correlations = injury_correlations.drop('injury')
-        injury_correlations = injury_correlations[injury_correlations.abs() >= 0.5]
+        high_corr_indices = injury_correlations[injury_correlations.abs() >= 0.5].index
+        injury_correlations = injury_correlations[high_corr_indices]
+        p_values_series = p_values_series[high_corr_indices]
 
         # Skip if there are no correlations
         if len(injury_correlations) == 0:
@@ -114,4 +111,15 @@ if __name__ == "__main__":
         plt.xticks(rotation=45, ha='right')
         plt.tight_layout()
         plt.savefig(f'correlation_analysis/athlete_{athlete_id}.png')
+        plt.close()
+
+        # plot p-values
+        plt.figure(figsize=(12, 6))
+        p_values_series.sort_values().plot(kind='bar')
+        plt.title(f'P-values for Feature Correlations with Injury (Athlete {athlete_id})')
+        plt.xlabel('Features')
+        plt.ylabel('P-value')
+        plt.xticks(rotation=45, ha='right')
+        plt.tight_layout()
+        plt.savefig(f'correlation_analysis/athlete_{athlete_id}_pvalues.png')
         plt.close()
