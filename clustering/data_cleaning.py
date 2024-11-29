@@ -132,7 +132,7 @@ def main():
 
             # save to csv
             filtered_data.to_csv(
-                f'clustering/filtered_data_without_noise.csv', index=False)
+                f'clustering/filtered_data_without_outliers.csv', index=False)
 
         # Count documents in each cluster
         unique_clusters = np.unique(clusters)
