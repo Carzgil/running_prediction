@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 import os
 
 # Load the preprocessed data
-data = pd.read_csv('processing/preprocessed_day.csv')
+data = pd.read_csv('processing/preprocessed_week.csv')
 
 # Load the selected features
-selected_features_df = pd.read_csv('analysis/daily/selected_features_nn.csv')
+selected_features_df = pd.read_csv('analysis/weekly/selected_features_nn.csv')
 selected_features = selected_features_df['Feature'].tolist()
 
 # Ensure the selected features are in the dataset

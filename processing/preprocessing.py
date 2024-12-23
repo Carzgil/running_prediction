@@ -11,6 +11,10 @@ def preprocess_data(input_file, output_file):
     X = data.drop(columns=['injury'])
     y = data['injury']
 
+    # Count the number of unique injured athletes
+    injured_athletes = data['Athlete ID'].nunique()
+    print(f"Number of unique injured athletes: {injured_athletes}")
+
     # Impute missing values with the mean
     imputer = SimpleImputer(strategy='mean')
     X_imputed = imputer.fit_transform(X)
